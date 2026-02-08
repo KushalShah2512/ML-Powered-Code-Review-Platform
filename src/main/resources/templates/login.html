@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - CodeReview.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; overflow: hidden;}
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; }
+        .btn-submit { width: 100%; padding: 12px; background: linear-gradient(to right, #4facfe, #00f2fe); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 24px; color: white; margin-bottom: 20px; font-weight: bold; }
+
+        .error-msg { background: rgba(255, 75, 75, 0.2); color: #ff6b6b; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; display: none; }
+        .success-msg { background: rgba(0, 255, 136, 0.2); color: #00ff88; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <div class="logo">CodeReview<span style="color: #4facfe;">.AI</span></div>
+        <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Secure Login</p>
+
+        <div class="error-msg" id="loginError"><i class="fas fa-times-circle"></i> Invalid Email or Password.</div>
+        <div class="success-msg" id="resetSuccess"><i class="fas fa-check-circle"></i> Password updated! Please login.</div>
+        <div class="success-msg" id="regSuccess"><i class="fas fa-check-circle"></i> Registration successful!</div>
+
+        <form th:action="@{/login}" method="POST">
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <div style="text-align: right; margin-bottom: 15px;">
+                <a href="/forgot-password" style="font-size: 12px; color: rgba(255,255,255,0.6); text-decoration: none;">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.5);">
+            New user? <a href="/signup" style="color: #4facfe; text-decoration: none;">Create Account</a>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) document.getElementById('loginError').style.display = 'block';
+        if (urlParams.get('success') === 'reset') document.getElementById('resetSuccess').style.display = 'block';
+        if (urlParams.get('success') === 'registered') document.getElementById('regSuccess').style.display = 'block';
+    </script>
+</body>
+</html>

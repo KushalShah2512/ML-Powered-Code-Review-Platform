@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - CodeReview.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            /* MATCHING LOGIN THEME */
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- GLASS SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.03); /* Very subtle glass */
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; margin-bottom: 50px; color: white; }
+        .logo span { color: #4facfe; }
+
+        .menu-item {
+            padding: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(79, 172, 254, 0.1);
+            color: #4facfe;
+        }
+        .menu-item i { width: 20px; text-align: center; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .avatar {
+            width: 35px; height: 35px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 14px;
+        }
+
+        /* --- GLASS CARDS --- */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #a8ff78; /* Matrix Green */
+            font-family: 'JetBrains Mono', monospace;
+            padding: 20px;
+            resize: none;
+            outline: none;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        textarea:focus { border-color: #4facfe; }
+
+        .btn-analyze {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            float: right;
+            transition: 0.3s;
+        }
+        .btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3); }
+
+        /* --- TABLE --- */
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .history-table th { text-align: left; color: rgba(255,255,255,0.4); padding: 15px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .history-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; color: rgba(255,255,255,0.8); }
+        .history-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .status-badge {
+            padding: 5px 12px;
+            background: rgba(255, 75, 75, 0.15); /* Default Red (Warning) */
+            color: #ff6b6b;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 75, 75, 0.2);
+        }
+        /* Make 'Clean Code' green */
+        .status-badge.clean {
+            background: rgba(0, 255, 136, 0.15);
+            color: #00ff88;
+            border-color: rgba(0, 255, 136, 0.2);
+        }
+
+        .btn-delete {
+            color: rgba(255,255,255,0.4);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .btn-delete:hover { color: #ff4b4b; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">CodeReview<span>.AI</span></div>
+        <a href="#" class="menu-item active"><i class="fas fa-code"></i> New Review</a>
+        <a href="#" class="menu-item"><i class="fas fa-history"></i> History</a>
+        <a href="#" class="menu-item"><i class="fas fa-user-circle"></i> Profile</a>
+        <div style="flex: 1;"></div>
+        <a th:href="@{/logout}" class="menu-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2 style="font-weight: 400;">Welcome back, <b th:text="${username}">Developer</b></h2>
+            <div class="user-profile">
+                <span style="font-size: 14px; color: rgba(255,255,255,0.7);" th:text="${username}">User</span>
+                <div class="avatar" th:text="${username.substring(0,1)}">U</div>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <h3 style="font-weight: 600; font-size: 18px;">Analyze Source Code</h3>
+            <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 5px;">
+                Paste your Java/Python code below. Our AI will scan for security risks and bugs.
+            </p>
+            
+            <form action="/analyze" method="POST">
+                <textarea name="codeContent" placeholder="// Paste code here..." required></textarea>
+                <button type="submit" class="btn-analyze"><i class="fas fa-robot"></i> Run Analysis</button>
+            </form>
+            <div style="clear: both;"></div> </div>
+
+        <div class="glass-panel">
+            <h3 style="font-weight: 600; font-size: 18px; margin-bottom: 20px;">Recent Scans</h3>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>File ID</th>
+                        <th>Analysis Result</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <tr><td colspan="3" style="text-align: center; color: rgba(255,255,255,0.3);">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/history')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector(".history-table tbody");
+                    tableBody.innerHTML = ""; 
+
+                    if (data.length === 0) {
+                        tableBody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:30px; color:rgba(255,255,255,0.3);'>No history found. Start analyzing!</td></tr>";
+                        return;
+                    }
+
+                    data.forEach(file => {
+                        // Determine Badge Color (Green if "Clean", Red otherwise)
+                        let badgeClass = "status-badge";
+                        let feedbackText = file.feedback ? file.feedback : "Pending";
+                        if (feedbackText.includes("Clean Code")) badgeClass += " clean";
+
+                        const row = `
+                            <tr>
+                                <td style="font-family: monospace; color: #4facfe;">#${file.id}</td>
+                                <td><span class="${badgeClass}">${feedbackText}</span></td>
+                                <td style="text-align: right;">
+                                    <a href="/delete-file?id=${file.id}" class="btn-delete" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

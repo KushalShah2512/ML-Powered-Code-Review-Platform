@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Join - CodeReview.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Use the same CSS from your previous file */
+        body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; overflow: hidden;}
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; }
+        .btn-submit { width: 100%; padding: 12px; background: linear-gradient(to right, #4facfe, #00f2fe); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-size: 24px; color: white; margin-bottom: 20px; font-weight: bold; }
+        
+        /* ERROR MESSAGE STYLE */
+        .error-msg {
+            background: rgba(255, 75, 75, 0.2); color: #ff6b6b; padding: 10px; border-radius: 8px;
+            font-size: 13px; margin-bottom: 20px; border: 1px solid rgba(255, 75, 75, 0.3);
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <div class="logo">CodeReview<span style="color: #4facfe;">.AI</span></div>
+        <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Join the Platform</p>
+
+        <div class="error-msg" id="existsError">
+            <i class="fas fa-exclamation-circle"></i> User already exists! Please <a href="/login" style="color: #ff6b6b; font-weight: bold;">Login</a>.
+        </div>
+
+        <form th:action="@{/register}" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.5);">
+            Already have an account? <a href="/login" style="color: #4facfe; text-decoration: none;">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        // Check URL for error parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'exists') {
+            document.getElementById('existsError').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
