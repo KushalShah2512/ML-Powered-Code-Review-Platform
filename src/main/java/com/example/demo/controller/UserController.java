@@ -106,4 +106,19 @@ public class UserController {
         }
         return "redirect:/forgot-password?error=notfound";
     }
+    
+    // --- USER PROFILE PAGE ---
+    @GetMapping("/profile")
+    public String showProfile(HttpSession session, Model model) {
+    	User user = (User) session.getAttribute("loggedInUser");
+    	if (user == null) return "redirect:/login";
+    	
+	// Refresh user data from DB to get latest info
+    	User currentUser = userRepository.findById(user.getId()).orElse(user);
+    	
+    	model.addAttribute("user", currentUser);
+    	model.addAttribute("projectCount",currentUser.getProjects() != null ? currentUser.getProjects().size() : 0);
+    	
+    	return "profile"; // WE will create profile.html next
+    }
 }

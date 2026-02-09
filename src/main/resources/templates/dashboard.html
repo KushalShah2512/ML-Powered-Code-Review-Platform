@@ -162,19 +162,21 @@
 
     <div class="sidebar">
         <div class="logo">CodeReview<span>.AI</span></div>
-        <a href="#" class="menu-item active"><i class="fas fa-code"></i> New Review</a>
-        <a href="#" class="menu-item"><i class="fas fa-history"></i> History</a>
-        <a href="#" class="menu-item"><i class="fas fa-user-circle"></i> Profile</a>
+        
+        <a href="/dashboard" class="menu-item active"><i class="fas fa-code"></i> New Review</a>
+        <a href="/history" class="menu-item"><i class="fas fa-history"></i> History</a>
+        <a href="/profile" class="menu-item"><i class="fas fa-user-circle"></i> Profile</a>
+        
         <div style="flex: 1;"></div>
         <a th:href="@{/logout}" class="menu-item"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div class="main-content">
         <div class="header">
-            <h2 style="font-weight: 400;">Welcome back, <b th:text="${username}">Developer</b></h2>
+            <h2 style="font-weight: 400;">Welcome back, <b th:text="${session.loggedInUser.username}">Developer</b></h2>
             <div class="user-profile">
-                <span style="font-size: 14px; color: rgba(255,255,255,0.7);" th:text="${username}">User</span>
-                <div class="avatar" th:text="${username.substring(0,1)}">U</div>
+                <span style="font-size: 14px; color: rgba(255,255,255,0.7);" th:text="${session.loggedInUser.username}">User</span>
+                <div class="avatar" th:text="${session.loggedInUser.username.substring(0,1)}">U</div>
             </div>
         </div>
 
@@ -200,7 +202,7 @@
                         <th style="text-align: right;">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="history-body">
                    <tr><td colspan="3" style="text-align: center; color: rgba(255,255,255,0.3);">Loading data...</td></tr>
                 </tbody>
             </table>
@@ -212,7 +214,7 @@
             fetch('/api/history')
                 .then(response => response.json())
                 .then(data => {
-                    const tableBody = document.querySelector(".history-table tbody");
+                    const tableBody = document.getElementById("history-body");
                     tableBody.innerHTML = ""; 
 
                     if (data.length === 0) {
@@ -221,17 +223,16 @@
                     }
 
                     data.forEach(file => {
-                        // Determine Badge Color (Green if "Clean", Red otherwise)
                         let badgeClass = "status-badge";
                         let feedbackText = file.feedback ? file.feedback : "Pending";
-                        if (feedbackText.includes("Clean Code")) badgeClass += " clean";
+                        if (feedbackText.includes("Clean Code") || feedbackText.includes("100")) badgeClass += " clean";
 
                         const row = `
                             <tr>
                                 <td style="font-family: monospace; color: #4facfe;">#${file.id}</td>
                                 <td><span class="${badgeClass}">${feedbackText}</span></td>
                                 <td style="text-align: right;">
-                                    <a href="/delete-file?id=${file.id}" class="btn-delete" title="Delete">
+                                    <a href="/delete-file?id=${file.id}" class="btn-delete" title="Delete" onclick="return confirm('Are you sure?')">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>

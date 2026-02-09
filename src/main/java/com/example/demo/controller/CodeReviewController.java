@@ -9,12 +9,14 @@ import com.example.demo.repository.UserRepository; // <--- ADDED THIS IMPORT
 import com.example.demo.service.CodeAnalysisService;
 import jakarta.servlet.http.HttpSession; 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -111,5 +113,26 @@ public class CodeReviewController {
         codeFileRepository.deleteById(id);
 
         return "redirect:/dashboard";
+    }
+    
+    // --- FULL HISTORY PAGE ---
+    @GetMapping("/history")
+    public String showHistoryPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) return "redirect:/login";
+
+        // Get fresh data
+        User currentUser = userRepository.findById(user.getId()).orElse(user);
+        
+        // Collect ALL files from ALL projects
+        List<CodeFile> allFiles = new ArrayList<>();
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                allFiles.addAll(p.getCodeFiles());
+            }
+        }
+        
+        model.addAttribute("files", allFiles);
+        return "history"; // We will create history.html next
     }
 }

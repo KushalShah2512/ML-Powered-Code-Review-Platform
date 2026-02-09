@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile - CodeReview.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { background: #0f0c29; color: white; font-family: 'Inter', sans-serif; display: flex; height: 100vh; margin: 0; }
+        
+        /* SIDEBAR (Same as Dashboard) */
+        .sidebar { width: 250px; background: rgba(255, 255, 255, 0.05); padding: 30px; display: flex; flex-direction: column; }
+        .brand { font-size: 24px; font-weight: bold; margin-bottom: 50px; color: white; text-decoration: none;}
+        .brand span { color: #4facfe; }
+        .nav-link { color: rgba(255,255,255,0.7); text-decoration: none; padding: 15px 0; display: flex; align-items: center; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: #4facfe; }
+        .nav-link i { margin-right: 15px; width: 20px; text-align: center; }
+        
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px;
+            max-width: 600px; margin: 0 auto; border: 1px solid rgba(255,255,255,0.1); text-align: center;
+        }
+        
+        .avatar-circle {
+            width: 100px; height: 100px; background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 40px; font-weight: bold; color: white;
+        }
+        
+        .info-group { text-align: left; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .label { color: rgba(255,255,255,0.5); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .value { font-size: 18px; margin-top: 5px; }
+        
+        .btn-back { display: inline-block; margin-top: 20px; color: rgba(255,255,255,0.6); text-decoration: none; }
+        .btn-back:hover { color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="/dashboard" class="brand">CodeReview<span>.AI</span></a>
+        <a href="/dashboard" class="nav-link"><i class="fas fa-code"></i> New Review</a>
+        <a href="/history" class="nav-link"><i class="fas fa-history"></i> History</a>
+        <a href="/profile" class="nav-link active"><i class="fas fa-user"></i> Profile</a> <a href="/logout" class="nav-link" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h2 style="margin-bottom: 30px;">User Profile</h2>
+
+        <div class="profile-card">
+            <div class="avatar-circle" th:text="${#strings.substring(user.username,0,1).toUpperCase()}">U</div>
+            <h3 th:text="${user.username}">Username</h3>
+            <p style="color: rgba(255,255,255,0.5); margin-bottom: 30px;" th:text="${user.email}">user@example.com</p>
+
+            <div class="info-group">
+                <div class="label">User ID</div>
+                <div class="value" th:text="'#' + ${user.id}">#1</div>
+            </div>
+            
+            <div class="info-group">
+                <div class="label">Account Role</div>
+                <div class="value" th:text="${user.role}">USER</div>
+            </div>
+
+            <div class="info-group">
+                <div class="label">Total Projects/Scans</div>
+                <div class="value" th:text="${projectCount}">5</div>
+            </div>
+            
+            <a href="/dashboard" class="btn-back">← Back to Dashboard</a>
+        </div>
+    </div>
+
+</body>
+</html>

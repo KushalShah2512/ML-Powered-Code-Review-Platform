@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My History - CodeReview.AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { background: #0f0c29; color: white; font-family: 'Inter', sans-serif; display: flex; height: 100vh; margin: 0; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 250px; background: rgba(255, 255, 255, 0.05); padding: 30px; display: flex; flex-direction: column; }
+        .brand { font-size: 24px; font-weight: bold; margin-bottom: 50px; color: white; text-decoration: none;}
+        .brand span { color: #4facfe; }
+        .nav-link { color: rgba(255,255,255,0.7); text-decoration: none; padding: 15px 0; display: flex; align-items: center; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { color: #4facfe; }
+        .nav-link i { margin-right: 15px; width: 20px; text-align: center; }
+        
+        /* MAIN CONTENT */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px; color: rgba(255,255,255,0.4); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+        
+        .code-preview { font-family: monospace; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px; color: #a8ff78; }
+        .feedback-text { color: #ffeb3b; font-size: 13px; }
+        
+        .btn-delete { color: #ff6b6b; cursor: pointer; text-decoration: none; }
+        .btn-delete:hover { color: red; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="/dashboard" class="brand">CodeReview<span>.AI</span></a>
+        <a href="/dashboard" class="nav-link"><i class="fas fa-code"></i> New Review</a>
+        <a href="/history" class="nav-link active"><i class="fas fa-history"></i> History</a> <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+        <a href="/logout" class="nav-link" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h2 style="margin-bottom: 10px;">Full Scan History</h2>
+        <p style="color: rgba(255,255,255,0.5); margin-bottom: 30px;">A complete record of all your code submissions.</p>
+
+        <div th:if="${files.empty}" style="padding: 40px; text-align: center; background: rgba(255,255,255,0.05); border-radius: 10px;">
+            <p>No history found. Go to "New Review" to scan your first code!</p>
+        </div>
+
+        <table th:if="${!files.empty}">
+            <thead>
+                <tr>
+                    <th>Date / ID</th>
+                    <th>Code Snippet</th>
+                    <th>AI Feedback</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="file : ${files}">
+                    <td>
+                        <div style="font-weight: bold;" th:text="${file.fileName}">Snippet_Date</div>
+                        <div style="font-size: 12px; opacity: 0.6;" th:text="'#' + ${file.id}">#12</div>
+                    </td>
+                    <td>
+                        <span class="code-preview" th:text="${#strings.abbreviate(file.content, 50)}">public void...</span>
+                    </td>
+                    <td>
+                        <span class="feedback-text" th:text="${#strings.abbreviate(file.feedback, 80)}">Clean Code...</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/delete-file(id=${file.id})}" class="btn-delete" onclick="return confirm('Delete this record?');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
