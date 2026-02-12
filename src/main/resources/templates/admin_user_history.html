@@ -2,42 +2,46 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>User Inspection - CodeReview.AI</title>
+    <title>User Inspection - Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        body { background: #0f0c29; color: white; font-family: 'Inter', sans-serif; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .back-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px; }
-        .back-link:hover { color: white; }
+        body { background: #1a0b1c; color: white; font-family: 'Inter', sans-serif; padding: 40px; }
         
-        .glass-panel { background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .header { display: flex; align-items: center; margin-bottom: 30px; }
+        .btn-back { 
+            background: rgba(255,255,255,0.1); color: white; text-decoration: none; 
+            padding: 10px 20px; border-radius: 8px; margin-right: 20px; 
+            transition: 0.3s; display: flex; align-items: center; gap: 10px;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.2); }
+
+        .glass-panel { background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; padding: 15px; color: rgba(255,255,255,0.4); font-size: 12px; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+        th { text-align: left; padding: 15px; color: rgba(255,255,255,0.4); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
         
         .code-snippet {
-            font-family: monospace; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 4px; color: #a8ff78;
-            max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;
+            font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; color: #a8ff78;
+            max-width: 400px; white-space: pre-wrap; font-size: 12px;
         }
-        .feedback-box { color: #ffeb3b; font-size: 13px; }
+        .feedback-box { color: #ffeb3b; font-size: 13px; font-style: italic; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div>
-            <a href="/admin" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <h2 style="margin-top: 10px;">Inspecting: <span style="color: #4facfe;" th:text="${targetUsername}">User</span></h2>
-        </div>
+        <a href="/admin" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <h2>Inspecting User: <span style="color: #4facfe;" th:text="${targetUsername}">User</span></h2>
     </div>
 
     <div class="glass-panel">
-        <h3>Submission History</h3>
+        <h3 style="margin-bottom: 20px;">Submission History</h3>
         
-        <div th:if="${files.empty}" style="padding: 20px; text-align: center; color: rgba(255,255,255,0.4);">
+        <div th:if="${files.empty}" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.4);">
+            <i class="fas fa-folder-open" style="font-size: 30px; margin-bottom: 10px; display: block;"></i>
             This user has not uploaded any code yet.
         </div>
 
@@ -45,17 +49,17 @@
             <thead>
                 <tr>
                     <th>File ID</th>
-                    <th>Date</th>
+                    <th>Date Uploaded</th>
                     <th>Code Snippet</th>
                     <th>AI Feedback</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="file : ${files}">
-                    <td th:text="${file.id}">1</td>
+                    <td style="color: #ff6b6b;" th:text="'#' + ${file.id}">#1</td>
                     <td th:text="${file.fileName}">Date</td>
                     <td>
-                        <span class="code-snippet" th:text="${file.content}">Code...</span>
+                        <div class="code-snippet" th:text="${#strings.abbreviate(file.content, 200)}">Code...</div>
                     </td>
                     <td>
                         <span class="feedback-box" th:text="${file.feedback}">Feedback</span>
