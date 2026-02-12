@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.CodeFile; // <--- ADDED THIS IMPORT
+import com.example.demo.model.CodeFile;
 import com.example.demo.model.User;
 import com.example.demo.repository.CodeFileRepository;
 import com.example.demo.repository.UserRepository;
@@ -23,29 +23,23 @@ public class AdminController {
         this.codeFileRepository = codeFileRepository;
     }
 
-    // --- ADMIN DASHBOARD ---
+    // --- 1. ADMIN DASHBOARD ---
     @GetMapping("/admin")
     public String showAdminDashboard(HttpSession session, Model model) {
-        // 1. Security Check: Is logged in? Is Admin?
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null || !"ADMIN".equals(user.getRole())) {
-            return "redirect:/login"; // Kick them out if not admin
+            return "redirect:/login";
         }
 
-        // 2. Fetch Stats
-        long totalUsers = userRepository.count();
-        long totalScans = codeFileRepository.count();
-
-        // 3. Fetch All Users for the Table
         model.addAttribute("users", userRepository.findAll());
-        model.addAttribute("totalUsers", totalUsers);
-        model.addAttribute("totalScans", totalScans);
+        model.addAttribute("totalUsers", userRepository.count());
+        model.addAttribute("totalScans", codeFileRepository.count());
         model.addAttribute("adminName", user.getUsername());
 
         return "admin_dashboard";
     }
 
-    // --- DELETE USER (Admin Only) ---
+    // --- 2. DELETE USER ---
     @GetMapping("/admin/delete-user")
     public String deleteUser(@RequestParam Long id, HttpSession session) {
         User admin = (User) session.getAttribute("loggedInUser");
@@ -56,22 +50,19 @@ public class AdminController {
         userRepository.deleteById(id);
         return "redirect:/admin";
     }
-    
-    // --- UPDATED: VIEW SPECIFIC USER'S FILES ---
+
+    // --- 3. VIEW SPECIFIC USER'S FILES ---
     @GetMapping("/admin/user-files")
     public String viewUserFiles(@RequestParam Long userId, HttpSession session, Model model) {
-        // 1. Security Check
         User admin = (User) session.getAttribute("loggedInUser");
         if (admin == null || !"ADMIN".equals(admin.getRole())) {
             return "redirect:/login";
         }
 
-        // 2. Fetch the Target User
         User targetUser = userRepository.findById(userId).orElse(null);
         if (targetUser == null) return "redirect:/admin";
 
-        // 3. THE FIX: FETCH FILES DIRECTLY
-        // This line replaces the old loop. It forces the DB to find the files.
+        // Fetch files directly using the Repository Method we created earlier
         List<CodeFile> allFiles = codeFileRepository.findByProject_User_Id(userId);
 
         model.addAttribute("files", allFiles);
