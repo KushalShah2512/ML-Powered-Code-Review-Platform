@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Global Code Repository - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { background: #1a0b1c; color: white; font-family: 'Inter', sans-serif; padding: 40px; }
+        
+        .header { display: flex; align-items: center; margin-bottom: 30px; }
+        .btn-back { 
+            background: rgba(255,255,255,0.1); color: white; text-decoration: none; 
+            padding: 10px 20px; border-radius: 8px; margin-right: 20px; 
+            transition: 0.3s; display: flex; align-items: center; gap: 10px;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.2); }
+
+        .glass-panel { background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px; color: rgba(255,255,255,0.4); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; font-size: 14px; }
+        
+        .owner-badge { background: rgba(79, 172, 254, 0.2); color: #4facfe; padding: 4px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; }
+        .code-preview { font-family: monospace; opacity: 0.7; font-size: 12px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="/admin" class="btn-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        <h2>Global Code Repository</h2>
+    </div>
+
+    <div class="glass-panel">
+        <h3 style="margin-bottom: 20px;">All Uploaded Files</h3>
+        
+        <table th:if="${!files.empty}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Owner</th>
+                    <th>Date / File</th>
+                    <th>Preview</th>
+                    <th>Feedback Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="file : ${files}">
+                    <td style="color: #ff6b6b;" th:text="'#' + ${file.id}">#1</td>
+                    <td>
+                        <span class="owner-badge" th:text="${file.project.user.username}">User</span>
+                    </td>
+                    <td th:text="${file.fileName}">Date</td>
+                    <td>
+                        <div class="code-preview" th:text="${#strings.abbreviate(file.content, 60)}">Code...</div>
+                    </td>
+                    <td style="color: #ffeb3b;" th:text="${#strings.abbreviate(file.feedback, 50)}">Feedback...</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div th:if="${files.empty}" style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">
+            No files found in the database.
+        </div>
+    </div>
+
+</body>
+</html>
