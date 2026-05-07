@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura | Premium 3D Clothing</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Home Specific Styles */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #020202 100%);
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 800;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to bottom, #fff, #555);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-premium {
+            padding: 1rem 2.5rem;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+        }
+
+        .btn-premium:hover {
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        /* 3D Product Grid */
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .product-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+
+        .product-image-container {
+            width: 100%;
+            aspect-ratio: 4/5;
+            background: #111;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        .product-image {
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+            transition: var(--transition-smooth);
+            transform: translateZ(50px);
+        }
+
+        .product-info {
+            transform: translateZ(30px);
+        }
+
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Aura</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages/listing.html">Collections</a></li>
+            <li><a href="pages/listing.html">Men</a></li>
+            <li><a href="pages/listing.html">Women</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <a href="pages/auth.html" class="btn-icon"><i class="fa-solid fa-user"></i></a>
+            <a href="pages/cart.html" class="btn-icon"><i class="fa-solid fa-bag-shopping"></i></a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero scene">
+            <div class="hero-content tilt-card" data-tilt-max="5">
+                <h1 class="hero-title">Dimension<br>Of Style</h1>
+                <p class="hero-subtitle">Premium 3D Fashion Experience</p>
+                <a href="pages/listing.html" class="btn-premium">Explore Collection</a>
+            </div>
+            <!-- Dynamic 3D Element (e.g., a shirt) would go here -->
+        </section>
+
+        <section class="container" style="padding: 100px 0;">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">New Arrivals</h2>
+            </div>
+
+            <div class="product-grid">
+                <!-- Example Product Card -->
+                <a href="pages/detail.html" class="product-card tilt-card animate-on-scroll">
+                    <div class="product-image-container">
+                        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=500&auto=format&fit=crop"
+                            alt="Premium Jacket" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category">Outerwear</p>
+                        <h3 class="product-name">Obsidian Tech Jacket</h3>
+                        <p class="product-price">$249.00</p>
+                    </div>
+                </a>
+
+                <a href="pages/detail.html" class="product-card tilt-card animate-on-scroll"
+                    style="animation-delay: 0.2s;">
+                    <div class="product-image-container">
+                        <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=500&auto=format&fit=crop"
+                            alt="Minimal Tee" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category">Essentials</p>
+                        <h3 class="product-name">Ghost Minimal Tee</h3>
+                        <p class="product-price">$65.00</p>
+                    </div>
+                </a>
+
+                <a href="pages/detail.html" class="product-card tilt-card animate-on-scroll"
+                    style="animation-delay: 0.4s;">
+                    <div class="product-image-container">
+                        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=500&auto=format&fit=crop"
+                            alt="Leather Boots" class="product-image">
+                    </div>
+                    <div class="product-info">
+                        <p class="product-category">Footwear</p>
+                        <h3 class="product-name">Carbon Edge Boots</h3>
+                        <p class="product-price">$320.00</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">Aura</a>
+                    <p class="footer-description">Defining the next dimension of fashion through immersive 3D
+                        experiences and premium craftsmanship.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="pages/listing.html">New Arrivals</a></li>
+                        <li><a href="pages/listing.html">Collections</a></li>
+                        <li><a href="pages/listing.html">Men</a></li>
+                        <li><a href="pages/listing.html">Women</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aura Premium. All rights reserved.</p>
+                <div style="display: flex; gap: 2rem;">
+                    <a href="#" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+                    <a href="#" style="color: inherit; text-decoration: none;">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

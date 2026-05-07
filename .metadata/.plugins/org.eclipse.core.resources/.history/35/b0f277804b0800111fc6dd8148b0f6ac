@@ -1,0 +1,315 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.CodeFile;
+import com.example.demo.model.Project;
+import com.example.demo.model.User;
+import com.example.demo.repository.CodeFileRepository;
+import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.CodeAnalysisService;
+import jakarta.servlet.http.HttpSession; 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+public class CodeReviewController {
+
+    private final CodeFileRepository codeFileRepository;
+    private final ProjectRepository projectRepository;
+    private final CodeAnalysisService codeAnalysisService;
+    private final UserRepository userRepository;
+
+    public CodeReviewController(CodeFileRepository codeFileRepository, 
+                                ProjectRepository projectRepository, 
+                                CodeAnalysisService codeAnalysisService,
+                                UserRepository userRepository) {
+        this.codeFileRepository = codeFileRepository;
+        this.projectRepository = projectRepository;
+        this.codeAnalysisService = codeAnalysisService;
+        this.userRepository = userRepository;
+    }
+
+    // --- 1. ANALYZE & SAVE CODE (UPDATED FOR PYTHON) ---
+    @PostMapping("/analyze")
+    public String analyzeCode(@RequestParam String codeContent, HttpSession session) {
+        // 1. Get User from Session
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        if (sessionUser == null) return "redirect:/login"; 
+
+        // 2. RELOAD USER FROM DB
+        User currentUser = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (currentUser == null) return "redirect:/login";
+
+        // 3. Run Analysis (Connects to Python Script)
+        // Expecting output format: "Score;Rank;Feedback"
+        String analysisResult = codeAnalysisService.analyzeCode(codeContent);
+        
+        // 4. Parse the Python Output
+        String[] parts = analysisResult.split(";");
+        int score = 0;
+        String rank = "Unknown";
+        String feedbackText = "No feedback provided";
+
+        if (parts.length >= 3) {
+            try {
+                score = Integer.parseInt(parts[0]);
+                rank = parts[1];
+                feedbackText = parts[2];
+            } catch (NumberFormatException e) {
+                System.out.println("Error parsing score: " + e.getMessage());
+            }
+        } else {
+            // Fallback if Python script fails or returns weird data
+            feedbackText = analysisResult; 
+        }
+
+        // 5. Find/Create "Sandbox" Project
+        Project sandboxProject = null;
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                if (p.getProjectName().equals("Sandbox")) {
+                    sandboxProject = p;
+                    break;
+                }
+            }
+        }
+        
+        if (sandboxProject == null) {
+            sandboxProject = new Project();
+            sandboxProject.setProjectName("Sandbox");
+            sandboxProject.setUser(currentUser);
+            projectRepository.save(sandboxProject);
+        }
+
+        // 6. Save File with Score and Feedback
+        CodeFile newFile = new CodeFile();
+        newFile.setContent(codeContent);
+        newFile.setFileName("Scan_" + LocalDateTime.now().toString()); 
+        newFile.setProject(sandboxProject);
+        
+        // Save the formatted string so it looks good in the history table
+        // Example: "⚠️ Hardcoded Password [Score: 60/100]"
+        newFile.setFeedback(feedbackText + " [Score: " + score + "/100]"); 
+        
+        codeFileRepository.save(newFile);
+
+        return "redirect:/dashboard"; 
+    }
+
+    // --- 2. GET HISTORY API ---
+    @GetMapping("/api/history")
+    @ResponseBody
+    public List<CodeFile> getUserHistory(HttpSession session) {
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        if (sessionUser == null) return List.of(); 
+
+        User currentUser = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (currentUser == null) return List.of();
+
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                if (p.getProjectName().equals("Sandbox")) {
+                    return projectRepository.findById(p.getId()).get().getCodeFiles();
+                }
+            }
+        }
+        return List.of();
+    }
+
+    // --- 3. DELETE FILE ---
+    @GetMapping("/delete-file")
+    public String deleteFile(@RequestParam Long id, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        if (currentUser == null) return "redirect:/login";
+
+        // Security check: Ensure the file belongs to the logged-in user before deleting
+        // (For the review demo, simple delete is okay, but this is best practice)
+        codeFileRepository.deleteById(id);
+
+        return "redirect:/dashboard"; // Changed from redirect:/history to keep user on same page usually
+    }
+    
+    // --- FULL HISTORY PAGE ---
+    @GetMapping("/history")
+    public String showHistoryPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) return "redirect:/login";
+
+        User currentUser = userRepository.findById(user.getId()).orElse(user);
+        
+        List<CodeFile> allFiles = new ArrayList<>();
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                allFiles.addAll(p.getCodeFiles());
+            }
+        }
+        
+        model.addAttribute("files", allFiles);
+        return "history";
+    }
+}package com.example.demo.controller;
+
+import com.example.demo.model.CodeFile;
+import com.example.demo.model.Project;
+import com.example.demo.model.User;
+import com.example.demo.repository.CodeFileRepository;
+import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.CodeAnalysisService;
+import jakarta.servlet.http.HttpSession; 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+public class CodeReviewController {
+
+    private final CodeFileRepository codeFileRepository;
+    private final ProjectRepository projectRepository;
+    private final CodeAnalysisService codeAnalysisService;
+    private final UserRepository userRepository;
+
+    public CodeReviewController(CodeFileRepository codeFileRepository, 
+                                ProjectRepository projectRepository, 
+                                CodeAnalysisService codeAnalysisService,
+                                UserRepository userRepository) {
+        this.codeFileRepository = codeFileRepository;
+        this.projectRepository = projectRepository;
+        this.codeAnalysisService = codeAnalysisService;
+        this.userRepository = userRepository;
+    }
+
+    // --- 1. ANALYZE & SAVE CODE (UPDATED FOR PYTHON) ---
+    @PostMapping("/analyze")
+    public String analyzeCode(@RequestParam String codeContent, HttpSession session) {
+        // 1. Get User from Session
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        if (sessionUser == null) return "redirect:/login"; 
+
+        // 2. RELOAD USER FROM DB
+        User currentUser = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (currentUser == null) return "redirect:/login";
+
+        // 3. Run Analysis (Connects to Python Script)
+        // Expecting output format: "Score;Rank;Feedback"
+        String analysisResult = codeAnalysisService.analyzeCode(codeContent);
+        
+        // 4. Parse the Python Output
+        String[] parts = analysisResult.split(";");
+        int score = 0;
+        String rank = "Unknown";
+        String feedbackText = "No feedback provided";
+
+        if (parts.length >= 3) {
+            try {
+                score = Integer.parseInt(parts[0]);
+                rank = parts[1];
+                feedbackText = parts[2];
+            } catch (NumberFormatException e) {
+                System.out.println("Error parsing score: " + e.getMessage());
+            }
+        } else {
+            // Fallback if Python script fails or returns weird data
+            feedbackText = analysisResult; 
+        }
+
+        // 5. Find/Create "Sandbox" Project
+        Project sandboxProject = null;
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                if (p.getProjectName().equals("Sandbox")) {
+                    sandboxProject = p;
+                    break;
+                }
+            }
+        }
+        
+        if (sandboxProject == null) {
+            sandboxProject = new Project();
+            sandboxProject.setProjectName("Sandbox");
+            sandboxProject.setUser(currentUser);
+            projectRepository.save(sandboxProject);
+        }
+
+        // 6. Save File with Score and Feedback
+        CodeFile newFile = new CodeFile();
+        newFile.setContent(codeContent);
+        newFile.setFileName("Scan_" + LocalDateTime.now().toString()); 
+        newFile.setProject(sandboxProject);
+        
+        // Save the formatted string so it looks good in the history table
+        // Example: "⚠️ Hardcoded Password [Score: 60/100]"
+        newFile.setFeedback(feedbackText + " [Score: " + score + "/100]"); 
+        
+        codeFileRepository.save(newFile);
+
+        return "redirect:/dashboard"; 
+    }
+
+    // --- 2. GET HISTORY API ---
+    @GetMapping("/api/history")
+    @ResponseBody
+    public List<CodeFile> getUserHistory(HttpSession session) {
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        if (sessionUser == null) return List.of(); 
+
+        User currentUser = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (currentUser == null) return List.of();
+
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                if (p.getProjectName().equals("Sandbox")) {
+                    return projectRepository.findById(p.getId()).get().getCodeFiles();
+                }
+            }
+        }
+        return List.of();
+    }
+
+    // --- 3. DELETE FILE ---
+    @GetMapping("/delete-file")
+    public String deleteFile(@RequestParam Long id, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        if (currentUser == null) return "redirect:/login";
+
+        // Security check: Ensure the file belongs to the logged-in user before deleting
+        // (For the review demo, simple delete is okay, but this is best practice)
+        codeFileRepository.deleteById(id);
+
+        return "redirect:/dashboard"; // Changed from redirect:/history to keep user on same page usually
+    }
+    
+    // --- FULL HISTORY PAGE ---
+    @GetMapping("/history")
+    public String showHistoryPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) return "redirect:/login";
+
+        User currentUser = userRepository.findById(user.getId()).orElse(user);
+        
+        List<CodeFile> allFiles = new ArrayList<>();
+        if (currentUser.getProjects() != null) {
+            for (Project p : currentUser.getProjects()) {
+                allFiles.addAll(p.getCodeFiles());
+            }
+        }
+        
+        model.addAttribute("files", allFiles);
+        return "history";
+    }
+}

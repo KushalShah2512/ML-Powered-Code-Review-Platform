@@ -1,0 +1,14 @@
+# Python / AI Engine
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Java / Spring Boot
+target/
+*.class
+
+# IDEs & OS Files
+.vscode/
+.idea/
+.DS_Store

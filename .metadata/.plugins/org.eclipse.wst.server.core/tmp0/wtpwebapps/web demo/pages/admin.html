@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Aura Control</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #050505;
+            padding: 2rem;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .admin-content {
+            padding: 3rem 5%;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+        }
+
+        .admin-table-container {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--glass);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition-smooth);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+        }
+
+        .sidebar-link.active,
+        .sidebar-link:hover {
+            color: var(--primary);
+            background: var(--glass);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <a href="../index.html" class="logo" style="margin-bottom: 2rem; display: block;">Aura</a>
+            <nav
+                style="position: static; padding: 0; background: none; flex-direction: column; gap: 0.5rem; display: flex; align-items: stretch;">
+                <a href="#" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                <a href="#" class="sidebar-link"><i class="fa-solid fa-box"></i> Products</a>
+                <a href="#" class="sidebar-link"><i class="fa-solid fa-receipt"></i> Orders</a>
+                <a href="#" class="sidebar-link"><i class="fa-solid fa-users"></i> Customers</a>
+                <a href="#" class="sidebar-link"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <header style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+                <h2>Overview Dashboard</h2>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span>Admin User</span>
+                    <div style="width: 40px; height: 40px; background: #222; border-radius: 50%;"></div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card glass-card">
+                    <div class="stat-val">$45.2k</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-val">128</div>
+                    <div class="stat-label">Stock Units</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-val">85</div>
+                    <div class="stat-label">Active Orders</div>
+                </div>
+            </div>
+
+            <section class="admin-table-container glass-card">
+                <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Recent Products</h3>
+                    <button class="btn-premium" style="padding: 0.5rem 1.5rem; font-size: 0.8rem;">Add New</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Obsidian Tech Jacket</td>
+                            <td>Outerwear</td>
+                            <td>$249.00</td>
+                            <td>12</td>
+                            <td><span class="badge">In Stock</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ghost Minimal Tee</td>
+                            <td>Essentials</td>
+                            <td>$65.00</td>
+                            <td>45</td>
+                            <td><span class="badge">In Stock</span></td>
+                        </tr>
+                        <tr>
+                            <td>Carbon Edge Boots</td>
+                            <td>Footwear</td>
+                            <td>$320.00</td>
+                            <td>3</td>
+                            <td><span class="badge" style="color: #ffa500;">Low Stock</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    <script src="../assets/js/main.js"></script>
+</body>
+
+</html>

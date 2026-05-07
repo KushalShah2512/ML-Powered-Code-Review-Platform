@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian Tech Jacket | Aura Premium</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .product-detail-container {
+            padding: 150px 5% 100px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .product-viewer {
+            position: sticky;
+            top: 150px;
+        }
+
+        .main-image-display {
+            width: 100%;
+            aspect-ratio: 4/5;
+            background: #111;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .main-image-display img {
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .image-thumbnails {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 100px;
+            background: #111;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-smooth);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thumb:hover,
+        .thumb.active {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-specs h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .options-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .options-label {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .size-selector {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .size-btn {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+        }
+
+        .size-btn:hover,
+        .size-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--secondary);
+        }
+
+        .add-to-cart-section {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .qty-input {
+            width: 100px;
+            height: 60px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            text-align: center;
+            font-size: 1.2rem;
+            border-radius: 4px;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            height: 60px;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-add-cart:hover {
+            background: var(--accent);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px var(--accent-glow);
+        }
+
+        .product-description {
+            margin-top: 3rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .product-viewer {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html" class="logo">Aura</a>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="listing.html">Collections</a></li>
+            <li><a href="listing.html">Men</a></li>
+            <li><a href="listing.html">Women</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <a href="auth.html" class="btn-icon"><i class="fa-solid fa-user"></i></a>
+            <a href="cart.html" class="btn-icon"><i class="fa-solid fa-bag-shopping"></i></a>
+        </div>
+    </nav>
+
+    <main class="product-detail-container">
+        <div class="product-viewer animate-on-scroll">
+            <div class="main-image-display tilt-card" data-tilt-max="10">
+                <img id="main-product-img"
+                    src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=800&auto=format&fit=crop"
+                    alt="Obsidian Tech Jacket">
+            </div>
+            <div class="image-thumbnails">
+                <div class="thumb active"><img
+                        src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=200&auto=format&fit=crop"
+                        alt="View 1"></div>
+                <div class="thumb"><img
+                        src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=200&auto=format&fit=crop"
+                        alt="View 2"></div>
+                <div class="thumb"><img
+                        src="https://images.unsplash.com/photo-1509948910842-82399d42122e?q=80&w=200&auto=format&fit=crop"
+                        alt="View 3"></div>
+            </div>
+        </div>
+
+        <div class="product-specs animate-on-scroll">
+            <p class="product-category">Outerwear / Premium</p>
+            <h1>Obsidian Tech Jacket</h1>
+            <p class="price-tag">$249.00</p>
+
+            <div class="options-group">
+                <label class="options-label">Select Color</label>
+                <div style="display: flex; gap: 1rem;">
+                    <div
+                        style="width: 30px; height: 30px; background: #000; border-radius: 50%; border: 2px solid #fff; cursor: pointer;">
+                    </div>
+                    <div style="width: 30px; height: 30px; background: #222; border-radius: 50%; cursor: pointer;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="options-group">
+                <label class="options-label">Select Size</label>
+                <div class="size-selector">
+                    <button class="size-btn">S</button>
+                    <button class="size-btn active">M</button>
+                    <button class="size-btn">L</button>
+                    <button class="size-btn">XL</button>
+                </div>
+            </div>
+
+            <div class="add-to-cart-section">
+                <input type="number" class="qty-input" value="1" min="1">
+                <button class="btn-add-cart">Add to Bag</button>
+            </div>
+
+            <div class="product-description">
+                <p>Designed for the urban explorer, the Obsidian Tech Jacket combines high-performance weatherproofing
+                    with a sleek, 3D-sculpted silhouette. Featuring laser-cut detailing, waterproof zippers, and a
+                    modular hood system.</p>
+                <ul style="margin-top: 1.5rem; padding-left: 1.2rem;">
+                    <li>High-density nylon construction</li>
+                    <li>Water-resistant finish</li>
+                    <li>Ergonomic 3D articulated sleeves</li>
+                    <li>Five internal secure pockets</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="logo">Aura</a>
+                    <p class="footer-description">Defining the next dimension of fashion through immersive 3D
+                        experiences and premium craftsmanship.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="listing.html">New Arrivals</a></li>
+                        <li><a href="listing.html">Collections</a></li>
+                        <li><a href="listing.html">Men</a></li>
+                        <li><a href="listing.html">Women</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aura Premium. All rights reserved.</p>
+                <div style="display: flex; gap: 2rem;">
+                    <a href="#" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+                    <a href="#" style="color: inherit; text-decoration: none;">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/cart.js"></script>
+</body>
+
+</html>

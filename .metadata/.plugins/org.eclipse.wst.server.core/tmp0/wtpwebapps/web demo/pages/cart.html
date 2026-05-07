@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Bag | Aura Premium</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cart-container {
+            padding: 150px 5% 100px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 4rem;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 120px;
+            aspect-ratio: 1;
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .cart-qty-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-main);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cart-summary {
+            position: sticky;
+            top: 150px;
+            height: fit-content;
+            padding: 2.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .total-row {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary);
+            color: var(--secondary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 2rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-checkout:hover {
+            background: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        @media (max-width: 1024px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html" class="logo">Aura</a>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="listing.html">Collections</a></li>
+            <li><a href="listing.html">Men</a></li>
+            <li><a href="listing.html">Women</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn-icon"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <a href="auth.html" class="btn-icon"><i class="fa-solid fa-user"></i></a>
+            <a href="cart.html" class="btn-icon"><i class="fa-solid fa-bag-shopping"></i></a>
+        </div>
+    </nav>
+
+    <main class="container cart-container">
+        <div class="cart-items animate-on-scroll">
+            <h1 style="margin-bottom: 3rem; font-size: 2.5rem;">YOUR BAG</h1>
+
+            <div class="cart-item">
+                <div class="cart-item-image">
+                    <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=200&auto=format&fit=crop"
+                        alt="Item">
+                </div>
+                <div class="cart-item-info">
+                    <p class="product-category">Outerwear</p>
+                    <h3>Obsidian Tech Jacket</h3>
+                    <p>Size: M | Color: Black</p>
+                    <div class="cart-qty-ctrl">
+                        <button class="qty-btn">-</button>
+                        <span>1</span>
+                        <button class="qty-btn">+</button>
+                    </div>
+                </div>
+                <div class="cart-item-price">
+                    <p style="font-size: 1.2rem; font-weight: 600;">$249.00</p>
+                    <button class="btn-icon" style="margin-top: 1rem; color: #ff4444;"><i
+                            class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>
+
+            <div class="cart-item">
+                <div class="cart-item-image">
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=200&auto=format&fit=crop"
+                        alt="Item">
+                </div>
+                <div class="cart-item-info">
+                    <p class="product-category">Essentials</p>
+                    <h3>Ghost Minimal Tee</h3>
+                    <p>Size: L | Color: White</p>
+                    <div class="cart-qty-ctrl">
+                        <button class="qty-btn">-</button>
+                        <span>2</span>
+                        <button class="qty-btn">+</button>
+                    </div>
+                </div>
+                <div class="cart-item-price">
+                    <p style="font-size: 1.2rem; font-weight: 600;">$130.00</p>
+                    <button class="btn-icon" style="margin-top: 1rem; color: #ff4444;"><i
+                            class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-summary tilt-card animate-on-scroll" data-tilt-max="3">
+            <h2 style="margin-bottom: 2rem; letter-spacing: 2px;">SUMMARY</h2>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>$379.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>FREE</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax</span>
+                <span>$30.32</span>
+            </div>
+            <div class="total-row summary-row">
+                <span>Total</span>
+                <span>$409.32</span>
+            </div>
+            <button class="btn-checkout">Checkout Now</button>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 1rem;">SECURE
+                CHECKOUT</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="logo">Aura</a>
+                    <p class="footer-description">Defining the next dimension of fashion through immersive 3D
+                        experiences and premium craftsmanship.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="listing.html">New Arrivals</a></li>
+                        <li><a href="listing.html">Collections</a></li>
+                        <li><a href="listing.html">Men</a></li>
+                        <li><a href="listing.html">Women</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aura Premium. All rights reserved.</p>
+                <div style="display: flex; gap: 2rem;">
+                    <a href="#" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+                    <a href="#" style="color: inherit; text-decoration: none;">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/cart.js"></script>
+</body>
+
+</html>
