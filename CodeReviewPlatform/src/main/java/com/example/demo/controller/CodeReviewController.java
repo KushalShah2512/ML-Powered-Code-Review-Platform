@@ -12,6 +12,7 @@ import com.example.demo.service.PdfService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession; 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value; // <--- NEW IMPORT FOR ENVIRONMENT VARIABLES
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-// --- NEW IMPORTS FOR THE AI BRIDGE ---
+// --- IMPORTS FOR THE AI BRIDGE ---
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
@@ -49,6 +50,11 @@ public class CodeReviewController {
 
     @Autowired
     private PdfService pdfService; 
+
+    // --- CLOUD READY ENVIRONMENT VARIABLE ---
+    // This pulls the URL from application.properties so it works locally AND in the cloud!
+    @Value("${ai.engine.url}")
+    private String aiEngineUrl;
 
     public CodeReviewController(CodeFileRepository codeFileRepository, 
                                 ProjectRepository projectRepository, 
@@ -102,7 +108,9 @@ public class CodeReviewController {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String pythonAiUrl = "http://127.0.0.1:5000/analyze";
+            
+            // 👉 THE FIX: Uses the dynamic variable instead of a hardcoded string
+            String pythonAiUrl = aiEngineUrl + "/analyze";
 
             // 1. Package the code into JSON
             HttpHeaders headers = new HttpHeaders();
@@ -114,7 +122,7 @@ public class CodeReviewController {
             HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             // 2. Send to Python and wait for the response
-            System.out.println("DEBUG: Sending code to Python AI Engine...");
+            System.out.println("DEBUG: Sending code to Python AI Engine at " + pythonAiUrl);
             ResponseEntity<Map> response = restTemplate.postForEntity(pythonAiUrl, requestEntity, Map.class);
             Map<String, Object> responseBody = response.getBody();
 
@@ -129,17 +137,17 @@ public class CodeReviewController {
                     feedbackText += " | Detected: " + String.join(", ", issues);
                 }
                 
-                // NEW: Attach the actionable fixes!
+                // Attach the actionable fixes!
                 List<String> fixes = (List<String>) responseBody.get("fixes");
                 if (fixes != null && !fixes.isEmpty()) {
                     feedbackText += " | Action Required: " + String.join(" ", fixes);
                 }
             }
         } catch (Exception e) {
-            System.out.println("🚨 ERROR: Could not connect to Python AI Engine. Is it running?");
+            System.out.println("🚨 ERROR: Could not connect to Python AI Engine.");
             System.out.println("Error details: " + e.getMessage());
             score = 0;
-            feedbackText = "AI Engine Offline: Please ensure the Python Flask server is running on port 5000.";
+            feedbackText = "AI Engine Offline: Ensure the Python server is running at " + aiEngineUrl;
         }
         // ==========================================
 
